@@ -17441,7 +17441,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var canvasSize = _Constants2.default.canvasSize,
-    BIRD_FRAME_LIST = _Constants2.default.BIRD_FRAME_LIST;
+    BIRD_FRAME_LIST = _Constants2.default.BIRD_FRAME_LIST,
+    GRAVITY = _Constants2.default.GRAVITY,
+    JUMP = _Constants2.default.JUMP;
 
 var Bird = function (_EventEmitter) {
   _inherits(Bird, _EventEmitter);
@@ -17453,6 +17455,7 @@ var Bird = function (_EventEmitter) {
 
     _this.flapCounter = 0;
     _this.bird = new PIXI.Container();
+    _this.speedY = 0;
 
     var i = 1;
     _lodash2.default.map(PIXI.loader.resources, function (resouce) {
@@ -17466,10 +17469,23 @@ var Bird = function (_EventEmitter) {
     _this.bird.y = canvasSize / 2.5;
     _this.bird.scale.y = _this.bird.scale.x = 0.065;
     stage.addChild(_this.bird);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.keyCode == 32) _this.jump();
+    });
+    stage.on('pointerdown', function () {
+      return _this.jump();
+    });
     return _this;
   }
 
   _createClass(Bird, [{
+    key: 'update',
+    value: function update() {
+      this.speedY += GRAVITY;
+      this.bird.y += this.speedY;
+    }
+  }, {
     key: 'flap',
     value: function flap() {
       var _this2 = this;
@@ -17484,6 +17500,11 @@ var Bird = function (_EventEmitter) {
       });
 
       if (this.flapCounter >= BIRD_FRAME_LIST.length) this.flapCounter = 0;
+    }
+  }, {
+    key: 'jump',
+    value: function jump() {
+      this.speedY -= JUMP;
     }
   }]);
 
@@ -17502,6 +17523,8 @@ var canvasSize = Math.min(Math.min(window.innerHeight, window.innerWidth), 512);
 
 exports.default = {
   canvasSize: canvasSize,
+  GRAVITY: 0.15,
+  JUMP: 3,
   BIRD_FRAME_LIST: ['./images/frame-1.png', './images/frame-2.png', './images/frame-3.png', './images/frame-4.png']
 };
 

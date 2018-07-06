@@ -4,6 +4,8 @@ import EventEmitter from 'events'
 const {
   canvasSize,
   BIRD_FRAME_LIST,
+  GRAVITY,
+  JUMP,
 } = Constants
 
 export default class Bird extends EventEmitter {
@@ -11,6 +13,7 @@ export default class Bird extends EventEmitter {
     super()
     this.flapCounter = 0
     this.bird = new PIXI.Container()
+    this.speedY = 0
 
     let i = 1
     _.map(PIXI.loader.resources, (resouce) => {
@@ -24,6 +27,16 @@ export default class Bird extends EventEmitter {
     this.bird.y = canvasSize / 2.5
     this.bird.scale.y = this.bird.scale.x = 0.065
     stage.addChild(this.bird)
+
+    document.addEventListener('keydown', e => {
+      if (e.keyCode == 32) this.jump()
+    })
+    stage.on('pointerdown', () => this.jump())
+  }
+
+  update() {
+    this.speedY += GRAVITY;
+    this.bird.y += this.speedY;
   }
 
   flap() {
@@ -38,4 +51,9 @@ export default class Bird extends EventEmitter {
 
     if (this.flapCounter >= BIRD_FRAME_LIST.length) this.flapCounter = 0
   }
+
+  jump() {
+    this.speedY -= JUMP
+  }
+
 }
