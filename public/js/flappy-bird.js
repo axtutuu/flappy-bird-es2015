@@ -17544,6 +17544,8 @@ var Game = function () {
   function Game() {
     _classCallCheck(this, Game);
 
+    this.flaptimer = 0;
+
     var canvas = document.querySelector('.js-canvas');
     this.renderer = PIXI.autoDetectRenderer({
       width: canvasSize,
@@ -17552,7 +17554,6 @@ var Game = function () {
       backgroundColor: 0xC1FFFF
     });
     this.stage = new PIXI.Container();
-    this.flaptimer = 0;
 
     PIXI.loader.add(BIRD_FRAME_LIST).load(this.init.bind(this));
   }

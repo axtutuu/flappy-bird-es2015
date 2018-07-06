@@ -7,15 +7,16 @@ const {
 
 export default class Game {
   constructor() {
+    this.flaptimer = 0
+
     const canvas = document.querySelector('.js-canvas')
     this.renderer = PIXI.autoDetectRenderer({
-      width: canvasSize,
-      height: canvasSize,
-      view: canvas,
+      width:           canvasSize,
+      height:          canvasSize,
+      view:            canvas,
       backgroundColor: 0xC1FFFF,
     })
     this.stage = new PIXI.Container()
-    this.flaptimer = 0
 
 
     PIXI.loader
@@ -25,7 +26,7 @@ export default class Game {
 
   init() {
     this.bird = new Bird(this.stage)
-    this.draw();
+    this.draw()
   }
 
   draw(time) {
