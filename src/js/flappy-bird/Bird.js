@@ -35,8 +35,16 @@ export default class Bird extends EventEmitter {
   }
 
   update() {
-    this.speedY += GRAVITY;
-    this.bird.y += this.speedY;
+    this.speedY += GRAVITY
+    this.bird.y += this.speedY
+
+    let isCollide = false
+    const { x, y, width, height } = this.bird
+    if (y < -height / 2 || y > canvasSize + height / 2) isCollide = true
+
+    if (isCollide) {
+      this.emit('collision')
+    }
   }
 
   flap() {
@@ -56,4 +64,10 @@ export default class Bird extends EventEmitter {
     this.speedY -= JUMP
   }
 
+  reset() {
+    console.log('reset')
+    this.bird.x = canvasSize / 5
+    this.bird.y = canvasSize / 2.5
+    this.speedY = 0
+  }
 }

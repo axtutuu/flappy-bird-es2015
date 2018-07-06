@@ -13,6 +13,8 @@ export default class Game {
     const canvas = document.querySelector('.js-canvas')
 
     this.started = false
+    this.failed = false
+
     this.renderer = PIXI.autoDetectRenderer({
       width:           canvasSize,
       height:          canvasSize,
@@ -29,16 +31,29 @@ export default class Game {
 
     this.startBtn.addEventListener('click', () => {
       this.started = true
+
+      if (this.failed) {
+        this.failed = false
+        this.bird.reset()
+        this.draw()
+      }
+      this.startBtn.classList.add('hide')
     })
   }
 
 
   init() {
     this.bird = new Bird(this.stage)
+    this.bird.on('collision', () => {
+      this.failed = true
+      this.startBtn.classList.remove('hide')
+    })
     this.draw()
   }
 
   draw(time) {
+    if (this.failed) return
+
     if (time - this.flaptimer > 200) {
       this.bird.flap()
       this.flaptimer = time

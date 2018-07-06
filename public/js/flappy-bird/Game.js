@@ -17484,6 +17484,19 @@ var Bird = function (_EventEmitter) {
     value: function update() {
       this.speedY += GRAVITY;
       this.bird.y += this.speedY;
+
+      var isCollide = false;
+      var _bird = this.bird,
+          x = _bird.x,
+          y = _bird.y,
+          width = _bird.width,
+          height = _bird.height;
+
+      if (y < -height / 2 || y > canvasSize + height / 2) isCollide = true;
+
+      if (isCollide) {
+        this.emit('collision');
+      }
     }
   }, {
     key: 'flap',
@@ -17505,6 +17518,14 @@ var Bird = function (_EventEmitter) {
     key: 'jump',
     value: function jump() {
       this.speedY -= JUMP;
+    }
+  }, {
+    key: 'reset',
+    value: function reset() {
+      console.log('reset');
+      this.bird.x = canvasSize / 5;
+      this.bird.y = canvasSize / 2.5;
+      this.speedY = 0;
     }
   }]);
 
@@ -17564,6 +17585,8 @@ var Game = function () {
     var canvas = document.querySelector('.js-canvas');
 
     this.started = false;
+    this.failed = false;
+
     this.renderer = PIXI.autoDetectRenderer({
       width: canvasSize,
       height: canvasSize,
@@ -17578,18 +17601,33 @@ var Game = function () {
 
     this.startBtn.addEventListener('click', function () {
       _this.started = true;
+
+      if (_this.failed) {
+        _this.failed = false;
+        _this.bird.reset();
+        _this.draw();
+      }
+      _this.startBtn.classList.add('hide');
     });
   }
 
   _createClass(Game, [{
     key: 'init',
     value: function init() {
+      var _this2 = this;
+
       this.bird = new _Bird2.default(this.stage);
+      this.bird.on('collision', function () {
+        _this2.failed = true;
+        _this2.startBtn.classList.remove('hide');
+      });
       this.draw();
     }
   }, {
     key: 'draw',
     value: function draw(time) {
+      if (this.failed) return;
+
       if (time - this.flaptimer > 200) {
         this.bird.flap();
         this.flaptimer = time;

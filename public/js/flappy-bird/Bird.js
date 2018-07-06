@@ -17484,6 +17484,19 @@ var Bird = function (_EventEmitter) {
     value: function update() {
       this.speedY += GRAVITY;
       this.bird.y += this.speedY;
+
+      var isCollide = false;
+      var _bird = this.bird,
+          x = _bird.x,
+          y = _bird.y,
+          width = _bird.width,
+          height = _bird.height;
+
+      if (y < -height / 2 || y > canvasSize + height / 2) isCollide = true;
+
+      if (isCollide) {
+        this.emit('collision');
+      }
     }
   }, {
     key: 'flap',
@@ -17505,6 +17518,14 @@ var Bird = function (_EventEmitter) {
     key: 'jump',
     value: function jump() {
       this.speedY -= JUMP;
+    }
+  }, {
+    key: 'reset',
+    value: function reset() {
+      console.log('reset');
+      this.bird.x = canvasSize / 5;
+      this.bird.y = canvasSize / 2.5;
+      this.speedY = 0;
     }
   }]);
 
